@@ -175,12 +175,13 @@ HandGestures.createGestureControl({
 - Die Verarbeitung findet ausschließlich auf dem Gerät im Browser statt.
 - Es werden keine Videobilder und keine Landmark-Daten gespeichert oder übertragen; es gibt keine Telemetrie.
 - Die Kamera wird erst nach ausdrücklichem Start durch die Nutzerin bzw. den Nutzer angefordert (Taste oder Button), nie beim Laden der Seite.
-- Netzwerkanfragen gehen nur an `assetBaseUrl` (MediaPipe-wasm und Modell) und erst, nachdem die Steuerung ausdrücklich gestartet wurde.
-- Beim Standardwert von `assetBaseUrl` (öffentliches CDN) wird die IP-Adresse der Nutzerin bzw. des Nutzers an den CDN-Betreiber übermittelt; eine Übermittlung in Drittländer ist möglich. Wer das vermeiden will, hostet die Dateien selbst und setzt `assetBaseUrl` auf den eigenen Pfad (siehe „Self-Hosting der MediaPipe-Dateien“).
+- Die einzigen Netzwerkanfragen sind das Laden der MediaPipe-wasm-Dateien und des Hand-Landmarker-Modells (`hand_landmarker.task`) – und zwar erst, nachdem die Steuerung ausdrücklich gestartet wurde.
+- In der Standardeinrichtung kommen diese Dateien von zwei Hosts: die wasm-Dateien vom CDN jsDelivr (`cdn.jsdelivr.net`, fest gepinnter Pfad `@mediapipe/tasks-vision@1.1.1`) und das Modell von `storage.googleapis.com` (Google). Dabei wird die IP-Adresse der Nutzerin bzw. des Nutzers an beide Betreiber übermittelt – an den CDN-Betreiber jsDelivr und an den Betreiber von `storage.googleapis.com`; eine Übermittlung in Drittländer ist möglich.
+- Wer das vermeiden will, hostet wasm-Dateien **und** Modell selbst und setzt `assetBaseUrl` auf den eigenen Pfad; dann entfallen beide Anfragen an fremde Hosts (siehe „Self-Hosting der MediaPipe-Dateien“).
 
 ## Self-Hosting der MediaPipe-Dateien
 
-Standardmäßig lädt die Bibliothek die wasm-Laufzeit und das Hand-Landmarker-Modell von einem öffentlichen CDN, fest gepinnt auf `@mediapipe/tasks-vision@1.1.1` (nie „latest“). Das ist nötig, damit Präsentationen funktionieren, die per `file://` direkt von der Festplatte geöffnet werden – dort gibt es keinen eigenen Server, der die Dateien ausliefern könnte.
+Standardmäßig lädt die Bibliothek die wasm-Laufzeit vom öffentlichen CDN jsDelivr, fest gepinnt auf `@mediapipe/tasks-vision@1.1.1` (nie „latest“), und das Hand-Landmarker-Modell (`hand_landmarker.task`) vom festen zweiten Host `storage.googleapis.com`. Beide Hosts erhalten dabei die IP-Adresse der Nutzerin bzw. des Nutzers. Mit selbst gehosteten wasm-Dateien und Modell unter `assetBaseUrl` werden beide Hosts nicht mehr kontaktiert. Das ist nötig, damit Präsentationen funktionieren, die per `file://` direkt von der Festplatte geöffnet werden – dort gibt es keinen eigenen Server, der die Dateien ausliefern könnte.
 
 `assetBaseUrl` akzeptiert nur `https:`-URLs oder relative bzw. same-origin-Pfade; andere Schemata (z. B. `http:`) werden beim Start mit einer lesbaren Fehlermeldung abgelehnt.
 
