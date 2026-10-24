@@ -1,0 +1,36 @@
+{
+  "name": "hand-gestures",
+  "version": "0.1.0",
+  "description": "Camera hand-gesture control for presentations: on-device MediaPipe hand tracking turned into slide commands (IIFE + ES module, reveal.js adapter).",
+  "type": "module",
+  "license": "MIT",
+  "main": "./dist/hand-gestures.es.js",
+  "module": "./dist/hand-gestures.es.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/hand-gestures.es.js",
+      "default": "./dist/hand-gestures.iife.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite build && vite",
+    "build": "vite build",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@mediapipe/tasks-vision": "1.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.2",
+    "jsdom": "^30.1.3",
+    "typescript": "^6.0.3",
+    "vite": "^8.3.5",
+    "vite-plugin-dts": "^5.1.2",
+    "vitest": "^5.0.5"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "runcontract": 1,
+  "services": [
+    {
+      "name": "web",
+      "dir": ".",
+      "stack": "web-vite",
+      "kind": "static",
+      "install": [["npm", "ci"]],
+      "build": [["npm", "run", "build"]],
+      "test": [["npm", "test"]],
+      "serve_dir": "dist"
+    }
+  ]
+}

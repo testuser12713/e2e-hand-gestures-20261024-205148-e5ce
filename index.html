@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hand gestures for presentations - HandGestures demo</title>
+  <link rel="stylesheet" href="./fonts/space-grotesk/font.css">
+  <link rel="stylesheet" href="./fonts/inter/font.css">
+  <link rel="stylesheet" href="./fonts/jetbrains-mono/font.css">
+  <style>
+    /* Tokens and classes from the approved design (design/mockups/styles.css). */
+    :root {
+      --bg: oklch(16% 0.022 255);
+      --surface: oklch(21% 0.026 255);
+      --surface-2: oklch(26% 0.03 255);
+      --border: oklch(34% 0.032 255);
+      --fg: oklch(96% 0.008 250);
+      --muted: oklch(75% 0.02 250);
+      --accent: oklch(82% 0.14 195);
+      --font-display: "Space Grotesk", system-ui, "Segoe UI", Arial, sans-serif;
+      --font-body: "Inter", system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+      --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, "Liberation Mono", monospace;
+      --text-xs: 0.75rem;
+      --text-sm: 0.875rem;
+      --text-md: 1rem;
+      --text-lg: clamp(1.0625rem, 0.95rem + 0.5vw, 1.375rem);
+      --text-h1: clamp(1.875rem, 1.2rem + 4.2vw, 4.5rem);
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.5rem;
+      --space-6: 2rem;
+      --radius-sm: 6px;
+      --radius-md: 12px;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; background: var(--bg); color: var(--fg); }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font-body);
+      font-size: var(--text-md);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: var(--text-h1);
+      font-weight: 600;
+      line-height: 1.1;
+      letter-spacing: -0.015em;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-wrap: balance;
+    }
+    p { margin: 0; hyphens: auto; text-wrap: pretty; }
+    .lead { font-size: var(--text-lg); color: var(--muted); max-width: 40rem; }
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .kbd {
+      display: inline-block;
+      min-width: 1.75rem;
+      padding: 0 var(--space-2);
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      line-height: 1.6rem;
+      text-align: center;
+      color: var(--fg);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-bottom-width: 2px;
+      border-radius: var(--radius-sm);
+    }
+    .stage {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: grid;
+      place-items: center;
+      padding: var(--space-6) var(--space-5);
+    }
+    .slide { width: min(100%, 64rem); display: grid; gap: var(--space-5); align-content: center; }
+    .slide-hint {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-2) var(--space-3);
+      max-width: 40rem;
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--text-sm);
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+    @media (max-width: 45rem) { .stage { padding-bottom: 6rem; } }
+  </style>
+</head>
+<body>
+  <main class="stage">
+    <section class="slide">
+      <p class="eyebrow">HandGestures · reveal.js demo</p>
+      <h1>Hand gestures for presentations</h1>
+      <p class="lead">Swipe in front of your webcam to move through this deck. Hands are recognised on your device; no video leaves the browser.</p>
+      <p class="slide-hint">
+        <span>Press <span class="kbd">G</span> or use the button in the corner to start.</span>
+        <span>Swipe left, right, up or down to navigate. Hold an open palm to pause, a fist for the overview.</span>
+      </p>
+    </section>
+  </main>
+
+  <!-- Classic script: works from a web server and when this file is opened from disk. -->
+  <script src="./dist/hand-gestures.iife.js"></script>
+  <script>
+    // Nothing is requested here: the camera and the MediaPipe assets load only after the user starts control.
+    if (window.HandGestures) {
+      window.gestureControl = window.HandGestures.createGestureControl();
+    }
+  </script>
+</body>
+</html>
