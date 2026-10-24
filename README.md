@@ -33,6 +33,12 @@ npm run build
 npx vite preview
 ```
 
+### Bestandteile des Produkts
+
+| Teil | Was es ist | Start |
+| --- | --- | --- |
+| `web` | Statische Website aus dem Ordner `dist/`: die gebaute Bibliothek (`hand-gestures.iife.js`, `hand-gestures.es.js`, Typdeklarationen) zusammen mit der reveal.js-Demo-Seite `index.html` und ihren Schriften. Es gibt keinen eigenen Server-Prozess; jeder statische Webserver liefert `dist/` aus. | `npm ci`, dann `npm run build`, dann `npx vite preview` (liefert `dist/` aus, Adresse steht in der Konsole, standardmäßig `http://localhost:4173`). |
+
 Alternativ funktioniert `index.html` im Repository-Wurzelverzeichnis nach `npm run build` auch direkt per Doppelklick (`file://`), weil die Bibliothek als klassisches Skript geladen wird.
 
 ## Verwendung
