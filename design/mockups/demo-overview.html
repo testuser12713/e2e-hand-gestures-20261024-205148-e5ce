@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Overview - fist held</title>
+  <meta name="screen-route" content="/">
+  <meta name="screen-state" content="overview open after a fist hold">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-keys='{"o":"demo-cheat-sheet.html","Escape":"demo-cheat-sheet.html","g":"demo-title.html"}'>
+<!-- serves: AC-04, AC-08 -->
+  <main class="stage" data-od-id="slide-overview">
+    <!-- reveal.js overview: every slide as a thumbnail, vertical stack below its parent -->
+    <h1 class="eyebrow" data-od-id="overview-title">Overview</h1>
+    <nav class="overview" aria-label="Slides">
+      <div class="overview__stack">
+        <a class="thumb" href="demo-title.html" data-od-id="thumb-title"><span class="thumb__no">1</span><span class="thumb__title">Hand gestures for presentations</span></a>
+      </div>
+      <div class="overview__stack">
+        <a class="thumb" href="demo-loading.html" data-od-id="thumb-how"><span class="thumb__no">2</span><span class="thumb__title">How it works</span></a>
+      </div>
+      <div class="overview__stack">
+        <a class="thumb" href="demo-cheat-sheet.html" aria-current="true" data-od-id="thumb-cheat-sheet"><span class="thumb__no">3</span><span class="thumb__title">Gesture cheat sheet</span></a>
+        <a class="thumb" href="demo-mirrored-view.html" data-od-id="thumb-mirrored"><span class="thumb__no">3.1</span><span class="thumb__title">Mirrored, with a cooldown</span></a>
+      </div>
+      <div class="overview__stack">
+        <a class="thumb" href="demo-adapters.html" data-od-id="thumb-adapters"><span class="thumb__no">4</span><span class="thumb__title">Adapters</span></a>
+      </div>
+      <div class="overview__stack">
+        <a class="thumb" href="demo-privacy.html" data-od-id="thumb-privacy"><span class="thumb__no">5</span><span class="thumb__title">On-device only</span></a>
+      </div>
+      <div class="overview__stack">
+        <a class="thumb" href="demo-integrate.html" data-od-id="thumb-integrate"><span class="thumb__no">6</span><span class="thumb__title">Add it to your own deck</span></a>
+      </div>
+    </nav>
+  </main>
+
+  <aside id="hg-overlay" class="hg" data-position="bottom-left" data-od-id="gesture-overlay" aria-label="Gesture control">
+    <div class="hg__preview" role="img" aria-label="Mirrored camera preview showing a closed fist"><img src="preview-fist.svg" alt=""></div>
+    <div class="hg__bar">
+      <span id="hg-status" class="badge badge--hand" role="status"><span class="badge__dot"></span>Hand detected</span>
+      <a id="hg-toggle" class="btn btn--sm" href="demo-title.html" data-od-id="overlay-toggle">Stop</a>
+    </div>
+    <p id="hg-error" class="hg__error" role="alert" hidden></p>
+    <div id="hg-flash" class="hg-flash is-visible" aria-live="polite">FIST_HOLD</div>
+  </aside>
+  <script src="nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Paused - open palm held</title>
+  <meta name="screen-route" content="/">
+  <meta name="screen-state" content="paused after an open palm hold">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-keys='{"b":"demo-adapters.html","Escape":"demo-adapters.html","g":"demo-title.html"}'>
+<!-- serves: AC-04, AC-08 -->
+  <!-- reveal.js pause overlay: hides the slide until paused is toggled again -->
+  <main class="pause-screen" data-od-id="pause-screen">
+    <h1 class="pause-screen__title" data-od-id="pause-title">Paused</h1>
+    <a class="btn btn--ghost" href="demo-adapters.html" data-od-id="pause-resume">Resume presentation</a>
+  </main>
+
+  <aside id="hg-overlay" class="hg" data-position="bottom-left" data-od-id="gesture-overlay" aria-label="Gesture control">
+    <div class="hg__preview" role="img" aria-label="Mirrored camera preview showing a raised hand"><img src="preview-hand.svg" alt=""></div>
+    <div class="hg__bar">
+      <span id="hg-status" class="badge badge--hand" role="status"><span class="badge__dot"></span>Hand detected</span>
+      <a id="hg-toggle" class="btn btn--sm" href="demo-title.html" data-od-id="overlay-toggle">Stop</a>
+    </div>
+    <p id="hg-error" class="hg__error" role="alert" hidden></p>
+    <div id="hg-flash" class="hg-flash is-visible" aria-live="polite">OPEN_PALM_HOLD</div>
+  </aside>
+  <script src="nav.js"></script>
+</body>
+</html>

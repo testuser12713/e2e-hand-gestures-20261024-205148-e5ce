@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How it works - control starting</title>
+  <meta name="screen-route" content="/">
+  <meta name="screen-state" content="slide 2, control starting (loading)">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-keys='{"ArrowLeft":"demo-title.html","ArrowRight":"demo-cheat-sheet.html","g":"demo-title.html"}'>
+<!-- serves: AC-08, AC-10, AC-14, AC-19 -->
+  <main class="stage" data-od-id="slide-how-it-works">
+    <!-- reveal.js section: slide 2 of 6 -->
+    <section class="slide" data-screen-label="02 How it works">
+      <p class="eyebrow" data-od-id="how-eyebrow">Three steps, all in the browser</p>
+      <h2 data-od-id="how-heading">How it works</h2>
+      <ol class="card-grid">
+        <li class="card" data-od-id="how-card-camera">
+          <span class="card__index">01</span>
+          <h3>Webcam</h3>
+          <p>The camera is requested only after you press start or the G key, and released when you stop.</p>
+        </li>
+        <li class="card" data-od-id="how-card-landmarks">
+          <span class="card__index">02</span>
+          <h3>Hand landmarks</h3>
+          <p>MediaPipe finds 21 points on a single hand, about 30 times per second.</p>
+        </li>
+        <li class="card" data-od-id="how-card-command">
+          <span class="card__index">03</span>
+          <h3>Command</h3>
+          <p>The recogniser turns palm movement into a gesture; the adapter calls reveal.js.</p>
+        </li>
+      </ol>
+    </section>
+  </main>
+
+  <aside id="hg-overlay" class="hg" data-position="bottom-left" data-od-id="gesture-overlay" aria-label="Gesture control">
+    <!-- camera requested, model files still downloading from assetBaseUrl -->
+    <div class="hg__preview hg__preview--pending"></div>
+    <div class="hg__bar">
+      <span id="hg-status" class="badge badge--loading" role="status"><span class="badge__dot"></span>Loading</span>
+      <a id="hg-toggle" class="btn btn--sm" href="demo-title.html" data-od-id="overlay-toggle">Stop</a>
+    </div>
+    <p id="hg-error" class="hg__error" role="alert" hidden></p>
+    <div id="hg-flash" class="hg-flash" aria-live="polite"></div>
+  </aside>
+  <script src="nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HandGestures demo - screens</title>
+  <meta name="screen-route" content="/screens">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<!-- serves: AC-04, AC-05, AC-07, AC-08, AC-10, AC-16 -->
+  <!-- Review launcher only: the product itself has one page, the reveal.js demo at "/". -->
+  <main class="stage">
+    <section class="slide" data-od-id="screen-index">
+      <p class="eyebrow" data-od-id="index-eyebrow">Mockup set</p>
+      <h1 data-od-id="index-heading">HandGestures demo</h1>
+      <p class="lead" data-od-id="index-lead">One reveal.js presentation with the injected gesture overlay. Each screen below is one state of it. In the screens, keys work as in the demo: arrows to navigate, G to toggle control, O and B for overview and pause.</p>
+      <table class="table" data-od-id="screen-table">
+        <thead>
+          <tr><th scope="col">Screen</th><th scope="col">Route</th><th scope="col">State shown</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row"><a href="demo-title.html">demo-title.html</a></th><td class="mono" data-label="Route">/</td><td data-label="State shown">Page as it opens, overlay off</td></tr>
+          <tr><th scope="row"><a href="demo-loading.html">demo-loading.html</a></th><td class="mono" data-label="Route">/</td><td data-label="State shown">Control starting, model loading</td></tr>
+          <tr><th scope="row"><a href="demo-cheat-sheet.html">demo-cheat-sheet.html</a></th><td class="mono" data-label="Route">/</td><td data-label="State shown">Gesture flash after a swipe</td></tr>
+          <tr
+            ><th scope="row"
+              ><a href="demo-mirrored-view.html">demo-mirrored-view.html</a
+            ></th
+            ><td class="mono" data-label="Route">/</td
+            ><td data-label="State shown">Vertical sub-slide, hand detected</td
+          ></tr>
+          <tr><th scope="row"><a href="demo-adapters.html">demo-adapters.html</a></th><td class="mono" data-label="Route">/</td><td data-label="State shown">Running, no hand in view</td></tr>
+          <tr
+            ><th scope="row"
+              ><a href="demo-privacy.html">demo-privacy.html</a
+            ></th
+            ><td class="mono" data-label="Route">/</td
+            ><td data-label="State shown">Start rejected, asset URL not allowed</td
+          ></tr>
+          <tr><th scope="row"><a href="demo-integrate.html">demo-integrate.html</a></th><td class="mono" data-label="Route">/</td><td data-label="State shown">Camera permission denied</td></tr>
+          <tr><th scope="row"><a href="demo-paused.html">demo-paused.html</a></th><td class="mono" data-label="Route">/</td><td data-label="State shown">Paused by open palm hold</td></tr>
+          <tr><th scope="row"><a href="demo-overview.html">demo-overview.html</a></th><td class="mono" data-label="Route">/</td><td data-label="State shown">Overview opened by fist hold</td></tr>
+        </tbody>
+      </table>
+      <p><a class="btn btn--primary" href="demo-title.html" data-od-id="index-open-demo">Open the demo</a></p>
+    </section>
+  </main>
+</body>
+</html>

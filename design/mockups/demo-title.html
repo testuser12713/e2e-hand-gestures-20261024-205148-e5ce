@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hand gestures for presentations - HandGestures demo</title>
+  <meta name="screen-route" content="/">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-keys='{"ArrowRight":"demo-loading.html","g":"demo-loading.html","b":"demo-paused.html"}'>
+<!-- serves: AC-04, AC-08, AC-11, AC-19 -->
+  <main class="stage stage--bar-only" data-od-id="slide-title">
+    <!-- reveal.js section: slide 1 of 6 -->
+    <section class="slide" data-screen-label="01 Title">
+      <p class="eyebrow" data-od-id="title-eyebrow">HandGestures · reveal.js demo</p>
+      <h1 data-od-id="title-heading">Hand gestures for presentations</h1>
+      <p class="lead" data-od-id="title-lead">Swipe in front of your webcam to move through this deck. Hands are recognised on your device; no video leaves the browser.</p>
+      <p class="slide-hint" data-od-id="title-gesture-hint">
+        <span>Press <span class="kbd">G</span> or use the button in the corner to start.</span>
+        <span>Swipe left, right, up or down to navigate. Hold an open palm to pause, a fist for the overview.</span>
+      </p>
+    </section>
+  </main>
+
+  <!-- Overlay injected by the library: neutral "off" state, no camera requested yet -->
+  <aside id="hg-overlay" class="hg" data-position="bottom-left" data-od-id="gesture-overlay" aria-label="Gesture control">
+    <div class="hg__preview" hidden></div>
+    <div class="hg__bar">
+      <span id="hg-status" class="badge badge--off" role="status"><span class="badge__dot"></span>Off</span>
+      <a id="hg-toggle" class="btn btn--primary btn--sm" href="demo-loading.html" data-od-id="overlay-toggle">Start gestures</a>
+    </div>
+    <p id="hg-error" class="hg__error" role="alert" hidden></p>
+    <div id="hg-flash" class="hg-flash" aria-live="polite"></div>
+  </aside>
+  <script src="nav.js"></script>
+</body>
+</html>

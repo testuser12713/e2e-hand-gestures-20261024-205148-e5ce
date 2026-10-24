@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gesture cheat sheet - gesture recognised</title>
+  <meta name="screen-route" content="/">
+  <meta name="screen-state" content="slide 3, gesture flash after a swipe">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-keys='{"ArrowLeft":"demo-loading.html","ArrowRight":"demo-adapters.html","ArrowDown":"demo-mirrored-view.html","o":"demo-overview.html","g":"demo-title.html"}'>
+<!-- serves: AC-04, AC-08 -->
+  <main class="stage" data-od-id="slide-cheat-sheet">
+    <!-- reveal.js section: slide 3 of 6, top of the vertical stack -->
+    <section class="slide" data-screen-label="03 Cheat sheet">
+      <p class="eyebrow" data-od-id="cheat-eyebrow">Default mapping for reveal.js</p>
+      <h2 data-od-id="cheat-heading">Gesture cheat sheet</h2>
+      <table class="table" data-od-id="cheat-table">
+        <thead>
+          <tr><th scope="col">Gesture</th><th scope="col">You do</th><th scope="col">Reveal call</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">SWIPE_LEFT</th><td data-label="You do">Move your open hand quickly to the left</td><td class="mono" data-label="Reveal call">Reveal.next()</td></tr>
+          <tr><th scope="row">SWIPE_RIGHT</th><td data-label="You do">Move your open hand quickly to the right</td><td class="mono" data-label="Reveal call">Reveal.prev()</td></tr>
+          <tr><th scope="row">SWIPE_UP</th><td data-label="You do">Move your open hand quickly up</td><td class="mono" data-label="Reveal call">Reveal.up()</td></tr>
+          <tr><th scope="row">SWIPE_DOWN</th><td data-label="You do">Move your open hand quickly down</td><td class="mono" data-label="Reveal call">Reveal.down()</td></tr>
+          <tr><th scope="row">OPEN_PALM_HOLD</th><td data-label="You do">Hold an open palm still</td><td class="mono" data-label="Reveal call">Reveal.togglePause()</td></tr>
+          <tr><th scope="row">FIST_HOLD</th><td data-label="You do">Hold a closed fist still</td><td class="mono" data-label="Reveal call">Reveal.toggleOverview()</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <aside id="hg-overlay" class="hg" data-position="bottom-left" data-od-id="gesture-overlay" aria-label="Gesture control">
+    <div class="hg__preview" role="img" aria-label="Mirrored camera preview showing a raised hand"><img src="preview-hand.svg" alt=""></div>
+    <div class="hg__bar">
+      <span id="hg-status" class="badge badge--hand" role="status"><span class="badge__dot"></span>Hand detected</span>
+      <a id="hg-toggle" class="btn btn--sm" href="demo-title.html" data-od-id="overlay-toggle">Stop</a>
+    </div>
+    <p id="hg-error" class="hg__error" role="alert" hidden></p>
+    <div id="hg-flash" class="hg-flash is-visible" aria-live="polite">SWIPE_LEFT</div>
+  </aside>
+  <script src="nav.js"></script>
+</body>
+</html>

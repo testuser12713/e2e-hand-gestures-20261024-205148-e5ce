@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>On-device only - asset URL rejected</title>
+  <meta name="screen-route" content="/">
+  <meta name="screen-state" content="slide 5, start rejected because the asset URL is not allowed">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-keys='{"ArrowLeft":"demo-adapters.html","ArrowRight":"demo-integrate.html","g":"demo-loading.html"}'>
+<!-- serves: AC-07, AC-09, AC-10, AC-15, AC-16, AC-17 -->
+  <main class="stage" data-od-id="slide-privacy">
+    <!-- reveal.js section: slide 5 of 6 -->
+    <section class="slide" data-screen-label="05 Privacy">
+      <p class="eyebrow" data-od-id="privacy-eyebrow">Privacy</p>
+      <h2 data-od-id="privacy-heading">On-device only</h2>
+      <ul class="fact-list">
+        <li data-od-id="privacy-fact-local">
+          <h3>Nothing leaves the browser</h3>
+          <p>No video frame and no landmark is stored or sent anywhere. There is no telemetry.</p>
+        </li>
+        <li data-od-id="privacy-fact-assets">
+          <h3>Only model files are fetched</h3>
+          <p>Requests go to <code>assetBaseUrl</code> for the MediaPipe wasm and model, and only after you start. It accepts <code>https:</code> or relative URLs.</p>
+        </li>
+        <li data-od-id="privacy-fact-cdn">
+          <h3>The default CDN sees your IP</h3>
+          <p>Self-host the assets and point <code>assetBaseUrl</code> to them to avoid that.</p>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <aside id="hg-overlay" class="hg" data-position="bottom-left" data-od-id="gesture-overlay" aria-label="Gesture control">
+    <div class="hg__preview" hidden></div>
+    <div class="hg__bar">
+      <span id="hg-status" class="badge badge--error" role="status"><span class="badge__dot"></span>Error</span>
+      <a id="hg-toggle" class="btn btn--primary btn--sm" href="demo-loading.html" data-od-id="overlay-toggle">Start gestures</a>
+    </div>
+    <p id="hg-error" class="hg__error" role="alert" data-od-id="overlay-error">assetBaseUrl must start with https:// or be a relative URL. The value "javascript:alert(1)" was rejected.</p>
+    <div id="hg-flash" class="hg-flash" aria-live="polite"></div>
+  </aside>
+  <script src="nav.js"></script>
+</body>
+</html>

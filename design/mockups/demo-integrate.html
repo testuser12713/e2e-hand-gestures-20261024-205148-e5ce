@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Add it to your own deck - camera denied</title>
+  <meta name="screen-route" content="/">
+  <meta name="screen-state" content="slide 6, camera permission denied">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-keys='{"ArrowLeft":"demo-privacy.html","g":"demo-loading.html"}'>
+<!-- serves: AC-05, AC-07, AC-09, AC-11, AC-17 -->
+  <main class="stage" data-od-id="slide-integrate">
+    <!-- reveal.js section: slide 6 of 6 -->
+    <section class="slide" data-screen-label="06 Integrate">
+      <p class="eyebrow" data-od-id="integrate-eyebrow">Classic script or ES module</p>
+      <h2 data-od-id="integrate-heading">Add it to your own deck</h2>
+<pre class="codeblock" data-od-id="integrate-code-iife"><span class="c">&lt;!-- works from file:// --&gt;</span>
+&lt;script src="dist/hand-gestures.iife.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  HandGestures.createGestureControl({
+    adapter: HandGestures.revealAdapter(Reveal)
+  });
+&lt;/script&gt;</pre>
+<pre class="codeblock" data-od-id="integrate-code-esm"><span class="c">// bundled project</span>
+import { createGestureControl, keyboardAdapter }
+  from "./dist/hand-gestures.es.js";</pre>
+      <p class="muted">Without a camera the deck keeps working with keyboard and mouse.</p>
+    </section>
+  </main>
+
+  <aside id="hg-overlay" class="hg" data-position="bottom-left" data-od-id="gesture-overlay" aria-label="Gesture control">
+    <div class="hg__preview" hidden></div>
+    <div class="hg__bar">
+      <span id="hg-status" class="badge badge--error" role="status"><span class="badge__dot"></span>Error</span>
+      <a id="hg-toggle" class="btn btn--primary btn--sm" href="demo-loading.html" data-od-id="overlay-toggle">Start gestures</a>
+    </div>
+    <p id="hg-error" class="hg__error" role="alert" data-od-id="overlay-error">Camera access was denied. Allow the camera in your browser's site settings and start again. Keyboard and mouse still work.</p>
+    <div id="hg-flash" class="hg-flash" aria-live="polite"></div>
+  </aside>
+  <script src="nav.js"></script>
+</body>
+</html>

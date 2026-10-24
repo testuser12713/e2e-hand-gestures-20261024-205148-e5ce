@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mirrored view and cooldown - vertical sub-slide</title>
+  <meta name="screen-route" content="/">
+  <meta name="screen-state" content="slide 3.1, vertical sub-slide with hand detected">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-keys='{"ArrowUp":"demo-cheat-sheet.html","ArrowLeft":"demo-loading.html","ArrowRight":"demo-adapters.html","g":"demo-title.html"}'>
+<!-- serves: AC-02, AC-03, AC-04, AC-08 -->
+  <main class="stage" data-od-id="slide-mirrored-view">
+    <!-- reveal.js section: slide 3.1, second slide of the vertical stack -->
+    <section class="slide" data-screen-label="03.1 Mirrored view">
+      <p class="eyebrow" data-od-id="mirror-eyebrow">Vertical sub-slide</p>
+      <h2 data-od-id="mirror-heading">Mirrored, with a cooldown</h2>
+      <ul class="fact-list">
+        <li data-od-id="mirror-fact-mirror">
+          <h3>Swipes follow the preview</h3>
+          <p>Move your hand to the left in the mirrored picture and the deck goes forward. <code>invertSwipe</code> flips it.</p>
+        </li>
+        <li data-od-id="mirror-fact-cooldown">
+          <h3>One gesture at a time</h3>
+          <p>After a gesture fires, nothing else fires for <code>cooldownMs</code> (800 by default), so the return stroke is ignored.</p>
+        </li>
+        <li data-od-id="mirror-fact-warmup">
+          <h3>Slow drift does nothing</h3>
+          <p>A short warm-up after the hand appears and a minimum speed keep casual movement from changing slides.</p>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <aside id="hg-overlay" class="hg" data-position="bottom-left" data-od-id="gesture-overlay" aria-label="Gesture control">
+    <div class="hg__preview" role="img" aria-label="Mirrored camera preview showing a raised hand"><img src="preview-hand.svg" alt=""></div>
+    <div class="hg__bar">
+      <span id="hg-status" class="badge badge--hand" role="status"><span class="badge__dot"></span>Hand detected</span>
+      <a id="hg-toggle" class="btn btn--sm" href="demo-title.html" data-od-id="overlay-toggle">Stop</a>
+    </div>
+    <p id="hg-error" class="hg__error" role="alert" hidden></p>
+    <div id="hg-flash" class="hg-flash" aria-live="polite"></div>
+  </aside>
+  <script src="nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Adapters - no hand in view</title>
+  <meta name="screen-route" content="/">
+  <meta name="screen-state" content="slide 4, running with no hand in view">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-keys='{"ArrowLeft":"demo-cheat-sheet.html","ArrowRight":"demo-privacy.html","b":"demo-paused.html","g":"demo-title.html"}'>
+<!-- serves: AC-06, AC-08 -->
+  <main class="stage" data-od-id="slide-adapters">
+    <!-- reveal.js section: slide 4 of 6 -->
+    <section class="slide" data-screen-label="04 Adapters">
+      <p class="eyebrow" data-od-id="adapters-eyebrow">Pick one with the adapter option</p>
+      <h2 data-od-id="adapters-heading">Adapters</h2>
+      <ul class="card-grid">
+        <li class="card" data-od-id="adapter-card-reveal">
+          <span class="card__index">revealAdapter(Reveal)</span>
+          <h3>reveal.js</h3>
+          <p>Calls <code>next</code>, <code>prev</code>, <code>up</code>, <code>down</code>, <code>togglePause</code> and <code>toggleOverview</code> directly.</p>
+        </li>
+        <li class="card" data-od-id="adapter-card-keyboard">
+          <span class="card__index">keyboardAdapter(mapping)</span>
+          <h3>Any keyboard tool</h3>
+          <p>Dispatches arrow keys, <span class="kbd">B</span> and <span class="kbd">O</span> to the document. The mapping can be overridden.</p>
+        </li>
+        <li class="card" data-od-id="adapter-card-custom">
+          <span class="card__index">{ handle(gesture) }</span>
+          <h3>Your own</h3>
+          <p>Any object with a <code>handle</code> method receives every gesture and its timestamp.</p>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <aside id="hg-overlay" class="hg" data-position="bottom-left" data-od-id="gesture-overlay" aria-label="Gesture control">
+    <div class="hg__preview" role="img" aria-label="Mirrored camera preview with no hand in view"><img src="preview-empty.svg" alt=""></div>
+    <div class="hg__bar">
+      <span id="hg-status" class="badge badge--no-hand" role="status"><span class="badge__dot"></span>No hand</span>
+      <a id="hg-toggle" class="btn btn--sm" href="demo-title.html" data-od-id="overlay-toggle">Stop</a>
+    </div>
+    <p id="hg-error" class="hg__error" role="alert" hidden></p>
+    <div id="hg-flash" class="hg-flash" aria-live="polite"></div>
+  </aside>
+  <script src="nav.js"></script>
+</body>
+</html>
