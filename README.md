@@ -112,6 +112,41 @@ Weitere Exporte: `revealAdapter(Reveal, mapping?)`, `keyboardAdapter(mapping?, t
 | `toggleKey` | `'g'` | Taste zum Ein-/Ausschalten |
 | `invertSwipe` | `false` | Horizontale Wischrichtung umkehren |
 
+## Adapter
+
+Ein Adapter ist ein Objekt `{ handle(gesture) }`; der Controller ruft `handle` für jede erkannte Geste auf.
+
+### `revealAdapter(Reveal, mapping?)`
+
+Steuert ein reveal.js-Deck. Standardbelegung (`DEFAULT_REVEAL_MAPPING`): siehe Gesten-Tabelle oben. Einzelne Einträge lassen sich überschreiben:
+
+```js
+HandGestures.createGestureControl({
+  adapter: HandGestures.revealAdapter(Reveal, { SWIPE_LEFT: 'right', SWIPE_RIGHT: 'left' }),
+});
+```
+
+### `keyboardAdapter(mapping?, target?)`
+
+Löst für jede Geste ein `KeyboardEvent` auf `target` (Standard: `document`) aus – geeignet für jedes Folienwerkzeug, das auf Pfeiltasten reagiert. Standardbelegung (`DEFAULT_KEY_MAPPING`):
+
+| Geste | Taste |
+| --- | --- |
+| `SWIPE_LEFT` | `ArrowRight` |
+| `SWIPE_RIGHT` | `ArrowLeft` |
+| `SWIPE_UP` | `ArrowUp` |
+| `SWIPE_DOWN` | `ArrowDown` |
+| `OPEN_PALM_HOLD` | `b` |
+| `FIST_HOLD` | `o` |
+
+Ein Eintrag kann ein Tastenname oder ein Objekt `{ key, code?, shiftKey?, ctrlKey?, altKey?, metaKey? }` sein:
+
+```js
+HandGestures.createGestureControl({
+  adapter: HandGestures.keyboardAdapter({ OPEN_PALM_HOLD: { key: 'p', shiftKey: true } }),
+});
+```
+
 ### Eigener Adapter
 
 ```js
@@ -139,13 +174,22 @@ HandGestures.createGestureControl({
 
 - Die Verarbeitung findet ausschließlich auf dem Gerät im Browser statt.
 - Es werden keine Videobilder und keine Landmark-Daten gespeichert oder übertragen; es gibt keine Telemetrie.
+- Die Kamera wird erst nach ausdrücklichem Start durch die Nutzerin bzw. den Nutzer angefordert (Taste oder Button), nie beim Laden der Seite.
 - Netzwerkanfragen gehen nur an `assetBaseUrl` (MediaPipe-wasm und Modell) und erst, nachdem die Steuerung ausdrücklich gestartet wurde.
-- Beim Standardwert von `assetBaseUrl` (öffentliches CDN) wird die IP-Adresse der Nutzerin bzw. des Nutzers an den CDN-Betreiber übermittelt; eine Übermittlung in Drittländer ist möglich. Wer das vermeiden will, hostet die Dateien selbst und setzt `assetBaseUrl` auf den eigenen Pfad.
+- Beim Standardwert von `assetBaseUrl` (öffentliches CDN) wird die IP-Adresse der Nutzerin bzw. des Nutzers an den CDN-Betreiber übermittelt; eine Übermittlung in Drittländer ist möglich. Wer das vermeiden will, hostet die Dateien selbst und setzt `assetBaseUrl` auf den eigenen Pfad (siehe „Self-Hosting der MediaPipe-Dateien“).
 
 ## Self-Hosting der MediaPipe-Dateien
+
+Standardmäßig lädt die Bibliothek die wasm-Laufzeit und das Hand-Landmarker-Modell von einem öffentlichen CDN, fest gepinnt auf `@mediapipe/tasks-vision@1.1.1` (nie „latest“). Das ist nötig, damit Präsentationen funktionieren, die per `file://` direkt von der Festplatte geöffnet werden – dort gibt es keinen eigenen Server, der die Dateien ausliefern könnte.
+
+`assetBaseUrl` akzeptiert nur `https:`-URLs oder relative bzw. same-origin-Pfade; andere Schemata (z. B. `http:`) werden beim Start mit einer lesbaren Fehlermeldung abgelehnt.
 
 Die wasm-Dateien liegen nach `npm ci` unter `node_modules/@mediapipe/tasks-vision/wasm/`. Kopieren Sie sie zusammen mit dem Hand-Landmarker-Modell auf den eigenen Webserver und übergeben Sie den Pfad:
 
 ```js
 HandGestures.createGestureControl({ assetBaseUrl: './mediapipe' });
+// oder absolut:
+HandGestures.createGestureControl({ assetBaseUrl: 'https://static.example.org/mediapipe' });
 ```
+
+Die Verzeichnisstruktur unter dem eigenen Pfad entspricht der des CDN-Pakets (wasm-Dateien im Unterordner `wasm/`). Ein relativer Pfad wie `./mediapipe` setzt voraus, dass die Seite über einen Webserver ausgeliefert wird (nicht `file://`); eine absolute `https:`-URL auf den eigenen Server funktioniert auch aus einer per `file://` geöffneten Seite.
