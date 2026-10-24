@@ -4,6 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Hand gestures for presentations - HandGestures demo</title>
+  <!-- reveal.js, pinned to one fixed version on one CDN (jsDelivr); classic tags so the page also works from file:// -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/reveal.css">
+  <!-- Fonts ship with the repository; nothing is loaded from a font host. -->
   <link rel="stylesheet" href="./fonts/space-grotesk/font.css">
   <link rel="stylesheet" href="./fonts/inter/font.css">
   <link rel="stylesheet" href="./fonts/jetbrains-mono/font.css">
@@ -17,23 +21,43 @@
       --fg: oklch(96% 0.008 250);
       --muted: oklch(75% 0.02 250);
       --accent: oklch(82% 0.14 195);
+      --accent-strong: oklch(88% 0.13 195);
+      --accent-ink: oklch(18% 0.04 215);
+      --focus: oklch(88% 0.13 195);
+      --pause-bg: oklch(10% 0.02 255);
+
       --font-display: "Space Grotesk", system-ui, "Segoe UI", Arial, sans-serif;
       --font-body: "Inter", system-ui, "Segoe UI", Roboto, Arial, sans-serif;
       --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, "Liberation Mono", monospace;
+
       --text-xs: 0.75rem;
       --text-sm: 0.875rem;
       --text-md: 1rem;
       --text-lg: clamp(1.0625rem, 0.95rem + 0.5vw, 1.375rem);
+      --text-h3: clamp(1.125rem, 1rem + 0.6vw, 1.5rem);
+      --text-h2: clamp(1.5rem, 1rem + 3vw, 3rem);
       --text-h1: clamp(1.875rem, 1.2rem + 4.2vw, 4.5rem);
+
+      --space-1: 0.25rem;
       --space-2: 0.5rem;
       --space-3: 0.75rem;
       --space-4: 1rem;
       --space-5: 1.5rem;
       --space-6: 2rem;
+      --space-7: 3rem;
+      --space-8: 4rem;
+
       --radius-sm: 6px;
       --radius-md: 12px;
+      --radius-pill: 999px;
+
+      /* reveal.js variables */
+      --r-link-color: var(--accent);
     }
+
     *, *::before, *::after { box-sizing: border-box; }
+    /* reveal.js marks far-away slides with [hidden] but shows them in the overview, so its sections are exempt */
+    [hidden]:not(section) { display: none !important; }
     html { -webkit-text-size-adjust: 100%; background: var(--bg); color: var(--fg); }
     body {
       margin: 0;
@@ -43,19 +67,30 @@
       line-height: 1.55;
       -webkit-font-smoothing: antialiased;
     }
-    h1 {
+    /* reveal.css paints the viewport white with black text; the design's stage is dark. */
+    body.reveal-viewport { background: var(--bg); color: var(--fg); line-height: 1.55; }
+
+    h1, h2, h3 {
       margin: 0;
       font-family: var(--font-display);
-      font-size: var(--text-h1);
       font-weight: 600;
       line-height: 1.1;
       letter-spacing: -0.015em;
       hyphens: auto;
+      -webkit-hyphens: auto;
       overflow-wrap: break-word;
       text-wrap: balance;
     }
-    p { margin: 0; hyphens: auto; text-wrap: pretty; }
+    h1 { font-size: var(--text-h1); }
+    h2 { font-size: var(--text-h2); }
+    h3 { font-size: var(--text-h3); line-height: 1.2; letter-spacing: -0.01em; }
+    p { margin: 0; hyphens: auto; -webkit-hyphens: auto; text-wrap: pretty; }
+    a { color: var(--accent); text-underline-offset: 0.2em; }
+    a:hover { color: var(--accent-strong); }
+    :focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: var(--radius-sm); }
+
     .lead { font-size: var(--text-lg); color: var(--muted); max-width: 40rem; }
+    .muted { color: var(--muted); }
     .eyebrow {
       font-family: var(--font-mono);
       font-size: var(--text-xs);
@@ -63,7 +98,10 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--accent);
+      hyphens: auto;
     }
+    code, .mono { font-family: var(--font-mono); font-size: 0.875em; font-variant-numeric: tabular-nums; }
+    code { padding: 0.1em 0.4em; background: var(--surface-2); border-radius: var(--radius-sm); overflow-wrap: anywhere; }
     .kbd {
       display: inline-block;
       min-width: 1.75rem;
@@ -78,14 +116,29 @@
       border-bottom-width: 2px;
       border-radius: var(--radius-sm);
     }
+
+    /* ---------- reveal.js frame ---------- */
+    .reveal { font-family: var(--font-body); color: var(--fg); }
+    .reveal .slides { text-align: left; }
+    /* Every slide fills the viewport and scrolls inside itself when its content is taller. */
+    .reveal .slides > section:not(.stack),
+    .reveal .slides > section > section {
+      height: 100%;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .reveal .controls { color: var(--accent); }
+    .reveal .progress { color: var(--accent); background: var(--surface); }
+
+    /* ---------- stage and slide (design: .stage / .slide) ---------- */
     .stage {
-      min-height: 100vh;
-      min-height: 100dvh;
+      min-height: 100%;
       display: grid;
       place-items: center;
       padding: var(--space-6) var(--space-5);
     }
-    .slide { width: min(100%, 64rem); display: grid; gap: var(--space-5); align-content: center; }
+    /* scoped: reveal.js puts its transition name ("slide") as a class on .reveal itself */
+    .stage > .slide { width: min(100%, 64rem); display: grid; gap: var(--space-5); align-content: center; }
     .slide-hint {
       display: flex;
       flex-wrap: wrap;
@@ -99,24 +152,170 @@
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
     }
-    @media (max-width: 45rem) { .stage { padding-bottom: 6rem; } }
 
-    /* Corner control bar (button + status badge), cut from the design's .hg / .btn / .badge classes. */
-    :root {
-      --accent-strong: oklch(88% 0.13 195);
-      --accent-ink: oklch(18% 0.04 215);
-      --focus: oklch(88% 0.13 195);
-      --status-off: oklch(68% 0.02 250);
-      --status-loading: oklch(82% 0.15 80);
-      --status-no-hand: oklch(76% 0.07 250);
-      --status-hand: oklch(80% 0.17 150);
-      --status-error: oklch(72% 0.18 25);
-      --scrim: oklch(12% 0.02 255 / 0.86);
-      --radius-pill: 999px;
-      --overlay-width: min(15rem, calc(100vw - 2rem));
+    /* ---------- cards ---------- */
+    .card {
+      display: grid;
+      gap: var(--space-2);
+      align-content: start;
+      padding: var(--space-5);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
     }
-    [hidden] { display: none !important; }
-    :focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: var(--radius-sm); }
+    .card__index { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--accent); letter-spacing: 0.08em; }
+    .card p { color: var(--muted); font-size: var(--text-sm); }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+      gap: var(--space-4);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .fact-list { display: grid; gap: var(--space-3); margin: 0; padding: 0; list-style: none; max-width: 44rem; }
+    .fact-list li {
+      display: grid;
+      gap: var(--space-1);
+      padding: var(--space-4) var(--space-5);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+    .fact-list p { color: var(--muted); }
+
+    /* ---------- table (cheat sheet) ---------- */
+    .table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); text-align: left; }
+    .table th, .table td { padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--border); vertical-align: top; }
+    .table thead th {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .table tbody th { font-family: var(--font-mono); font-size: var(--text-sm); font-weight: 500; color: var(--accent); }
+    .table td { color: var(--fg); }
+    .table td.mono { color: var(--muted); }
+    @media (max-width: 40rem) {
+      .table, .table tbody, .table tr, .table th, .table td { display: block; }
+      .table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+      .table tr { padding: var(--space-3) 0; border-bottom: 1px solid var(--border); }
+      .table th, .table td { padding: var(--space-1) 0; border: 0; }
+      .table td[data-label]::before {
+        content: attr(data-label);
+        display: block;
+        font-family: var(--font-mono);
+        font-size: var(--text-xs);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+    }
+
+    /* ---------- code block ---------- */
+    .codeblock {
+      margin: 0;
+      max-width: 44rem;
+      padding: var(--space-4) var(--space-5);
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      line-height: 1.6;
+      color: var(--fg);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+    .codeblock .c { color: var(--muted); }
+    @media (max-width: 30rem) { .codeblock { font-size: var(--text-xs); padding: var(--space-4); } }
+
+    /* ---------- reveal.js overview (design: demo-overview.html) ---------- */
+    .overview-title {
+      display: none;
+      position: absolute;
+      z-index: 20;
+      top: var(--space-5);
+      left: 0;
+      right: 0;
+      width: max-content;
+      margin: 0 auto;
+      padding: var(--space-1) var(--space-3);
+      text-align: center;
+      background: var(--bg);
+      border-radius: var(--radius-pill);
+      pointer-events: none;
+    }
+    .reveal.overview .overview-title { display: block; }
+    /* Each slide becomes a thumbnail card; reveal scales the whole deck down, so outline and radius are drawn large. */
+    .reveal.overview .slides > section:not(.stack),
+    .reveal.overview .slides > section > section {
+      background: var(--surface);
+      border-radius: 3rem;
+      outline: 6px solid var(--border);
+      outline-offset: 0;
+      transition: background-color 120ms, outline-color 120ms;
+    }
+    .reveal.overview .slides > section:not(.stack):hover,
+    .reveal.overview .slides > section > section:hover {
+      background: var(--surface-2);
+      outline: 6px solid oklch(48% 0.04 255);
+    }
+    .reveal.overview .slides > section.present:not(.stack),
+    .reveal.overview .slides > section > section.present {
+      outline: 12px solid var(--accent);
+    }
+
+    /* ---------- reveal.js pause (design: demo-paused.html) ---------- */
+    .reveal .pause-overlay {
+      display: grid;
+      place-items: center;
+      align-content: center;
+      gap: var(--space-5);
+      padding: var(--space-5);
+      text-align: center;
+      background: var(--pause-bg);
+    }
+    .reveal .pause-overlay::before {
+      content: "Paused";
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    /* reveal's own resume button, styled as the design's ghost button */
+    .reveal .pause-overlay .resume-button {
+      position: static;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      min-height: 2.75rem;
+      padding: 0 var(--space-4);
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      line-height: 1;
+      white-space: nowrap;
+      color: var(--fg);
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      transition: background-color 120ms, border-color 120ms, transform 120ms;
+    }
+    .reveal .pause-overlay .resume-button:hover {
+      color: var(--fg);
+      background: oklch(31% 0.034 255);
+      border-color: oklch(45% 0.04 255);
+    }
+    .reveal .pause-overlay .resume-button:active { transform: translateY(1px); }
+
+    /* Fallback notice when the library bundle is missing (kept from the skeleton's corner control). */
+    :root { --status-error: oklch(72% 0.18 25); --overlay-width: min(15rem, calc(100vw - 2rem)); }
     .demo-control {
       position: fixed;
       z-index: 100;
@@ -125,18 +324,6 @@
       width: var(--overlay-width);
       display: grid;
       gap: var(--space-2);
-    }
-    .demo-control__bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--space-2);
-      padding: var(--space-2);
-      background: var(--scrim);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-pill);
-      backdrop-filter: blur(8px);
-      box-shadow: 0 8px 24px oklch(5% 0.02 255 / 0.5);
     }
     .demo-control__error {
       margin: 0;
@@ -148,153 +335,239 @@
       border: 1px solid color-mix(in oklch, var(--status-error) 60%, transparent);
       border-radius: var(--radius-md);
     }
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: var(--space-2);
-      min-height: 2.75rem;
-      padding: 0 var(--space-3);
-      font-family: var(--font-body);
-      font-size: var(--text-sm);
-      font-weight: 600;
-      line-height: 1;
-      white-space: nowrap;
-      color: var(--fg);
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-pill);
-      cursor: pointer;
-      transition: background-color 120ms, border-color 120ms, transform 120ms;
+
+    @media (max-width: 45rem) {
+      /* keep the corner overlay from covering slide content on narrow screens */
+      .stage { padding-bottom: 17rem; }
+      .stage.stage--bar-only { padding-bottom: 6rem; }
     }
-    .btn:hover { background: oklch(31% 0.034 255); border-color: oklch(45% 0.04 255); color: var(--fg); }
-    .btn:active { transform: translateY(1px); }
-    .btn[disabled] { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
-    .btn--primary { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); }
-    .btn--primary:hover { color: var(--accent-ink); background: var(--accent-strong); border-color: var(--accent-strong); }
-    .badge {
-      --badge-color: var(--status-off);
-      display: inline-flex;
-      align-items: center;
-      gap: var(--space-2);
-      min-height: 1.75rem;
-      padding: 0 var(--space-3);
-      font-family: var(--font-mono);
-      font-size: var(--text-xs);
-      font-weight: 500;
-      letter-spacing: 0.03em;
-      white-space: nowrap;
-      color: var(--fg);
-      background: color-mix(in oklch, var(--badge-color) 16%, var(--surface));
-      border: 1px solid color-mix(in oklch, var(--badge-color) 55%, transparent);
-      border-radius: var(--radius-pill);
-    }
-    .badge__dot { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--badge-color); }
-    .badge--off { --badge-color: var(--status-off); }
-    .badge--loading { --badge-color: var(--status-loading); }
-    .badge--loading .badge__dot { animation: pulse 1s ease-in-out infinite; }
-    .badge--no-hand { --badge-color: var(--status-no-hand); }
-    .badge--hand { --badge-color: var(--status-hand); }
-    .badge--error { --badge-color: var(--status-error); }
-    @keyframes pulse { 50% { opacity: 0.3; } }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation: none !important; transition: none !important; }
     }
   </style>
 </head>
 <body>
-  <main class="stage">
-    <section class="slide">
-      <p class="eyebrow">HandGestures · reveal.js demo</p>
-      <h1>Hand gestures for presentations</h1>
-      <p class="lead">Swipe in front of your webcam to move through this deck. Hands are recognised on your device; no video leaves the browser.</p>
-      <p class="slide-hint">
-        <span>Press <span class="kbd">G</span> or use the button in the corner to start.</span>
-        <span>Swipe left, right, up or down to navigate. Hold an open palm to pause, a fist for the overview.</span>
-      </p>
-    </section>
-  </main>
+  <div class="reveal">
+    <h1 class="eyebrow overview-title" data-od-id="overview-title">Overview</h1>
+    <div class="slides">
 
+      <!-- 1: design/mockups/demo-title.html -->
+      <section data-od-id="slide-title" data-screen-label="01 Title">
+        <div class="stage stage--bar-only">
+          <div class="slide">
+            <p class="eyebrow" data-od-id="title-eyebrow">HandGestures · reveal.js demo</p>
+            <h1 data-od-id="title-heading">Hand gestures for presentations</h1>
+            <p class="lead" data-od-id="title-lead">Swipe in front of your webcam to move through this deck. Hands are recognised on your device; no video leaves the browser.</p>
+            <p class="slide-hint" data-od-id="title-gesture-hint">
+              <span>Press <span class="kbd">G</span> or use the button in the corner to start.</span>
+              <span>Swipe left, right, up or down to navigate. Hold an open palm to pause, a fist for the overview.</span>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2: design/mockups/demo-loading.html -->
+      <section data-od-id="slide-how-it-works" data-screen-label="02 How it works">
+        <div class="stage">
+          <div class="slide">
+            <p class="eyebrow" data-od-id="how-eyebrow">Three steps, all in the browser</p>
+            <h2 data-od-id="how-heading">How it works</h2>
+            <ol class="card-grid">
+              <li class="card" data-od-id="how-card-camera">
+                <span class="card__index">01</span>
+                <h3>Webcam</h3>
+                <p>The camera is requested only after you press start or the G key, and released when you stop.</p>
+              </li>
+              <li class="card" data-od-id="how-card-landmarks">
+                <span class="card__index">02</span>
+                <h3>Hand landmarks</h3>
+                <p>MediaPipe finds 21 points on a single hand, about 30 times per second.</p>
+              </li>
+              <li class="card" data-od-id="how-card-command">
+                <span class="card__index">03</span>
+                <h3>Command</h3>
+                <p>The recogniser turns palm movement into a gesture; the adapter calls reveal.js.</p>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3: vertical stack -->
+      <section data-od-id="stack-gestures">
+        <!-- 3: design/mockups/demo-cheat-sheet.html (top of the stack) -->
+        <section data-od-id="slide-cheat-sheet" data-screen-label="03 Cheat sheet">
+          <div class="stage">
+            <div class="slide">
+              <p class="eyebrow" data-od-id="cheat-eyebrow">Default mapping for reveal.js</p>
+              <h2 data-od-id="cheat-heading">Gesture cheat sheet</h2>
+              <table class="table" data-od-id="cheat-table">
+                <thead>
+                  <tr><th scope="col">Gesture</th><th scope="col">You do</th><th scope="col">Reveal call</th></tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row">SWIPE_LEFT</th><td data-label="You do">Move your open hand quickly to the left</td><td class="mono" data-label="Reveal call">Reveal.next()</td></tr>
+                  <tr><th scope="row">SWIPE_RIGHT</th><td data-label="You do">Move your open hand quickly to the right</td><td class="mono" data-label="Reveal call">Reveal.prev()</td></tr>
+                  <tr><th scope="row">SWIPE_UP</th><td data-label="You do">Move your open hand quickly up</td><td class="mono" data-label="Reveal call">Reveal.up()</td></tr>
+                  <tr><th scope="row">SWIPE_DOWN</th><td data-label="You do">Move your open hand quickly down</td><td class="mono" data-label="Reveal call">Reveal.down()</td></tr>
+                  <tr><th scope="row">OPEN_PALM_HOLD</th><td data-label="You do">Hold an open palm still</td><td class="mono" data-label="Reveal call">Reveal.togglePause()</td></tr>
+                  <tr><th scope="row">FIST_HOLD</th><td data-label="You do">Hold a closed fist still</td><td class="mono" data-label="Reveal call">Reveal.toggleOverview()</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3.1: design/mockups/demo-mirrored-view.html (vertical sub-slide) -->
+        <section data-od-id="slide-mirrored-view" data-screen-label="03.1 Mirrored view">
+          <div class="stage">
+            <div class="slide">
+              <p class="eyebrow" data-od-id="mirror-eyebrow">Vertical sub-slide</p>
+              <h2 data-od-id="mirror-heading">Mirrored, with a cooldown</h2>
+              <ul class="fact-list">
+                <li data-od-id="mirror-fact-mirror">
+                  <h3>Swipes follow the preview</h3>
+                  <p>Move your hand to the left in the mirrored picture and the deck goes forward. <code>invertSwipe</code> flips it.</p>
+                </li>
+                <li data-od-id="mirror-fact-cooldown">
+                  <h3>One gesture at a time</h3>
+                  <p>After a gesture fires, nothing else fires for <code>cooldownMs</code> (800 by default), so the return stroke is ignored.</p>
+                </li>
+                <li data-od-id="mirror-fact-warmup">
+                  <h3>Slow drift does nothing</h3>
+                  <p>A short warm-up after the hand appears and a minimum speed keep casual movement from changing slides.</p>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- 4: design/mockups/demo-adapters.html -->
+      <section data-od-id="slide-adapters" data-screen-label="04 Adapters">
+        <div class="stage">
+          <div class="slide">
+            <p class="eyebrow" data-od-id="adapters-eyebrow">Pick one with the adapter option</p>
+            <h2 data-od-id="adapters-heading">Adapters</h2>
+            <ul class="card-grid">
+              <li class="card" data-od-id="adapter-card-reveal">
+                <span class="card__index">revealAdapter(Reveal)</span>
+                <h3>reveal.js</h3>
+                <p>Calls <code>next</code>, <code>prev</code>, <code>up</code>, <code>down</code>, <code>togglePause</code> and <code>toggleOverview</code> directly.</p>
+              </li>
+              <li class="card" data-od-id="adapter-card-keyboard">
+                <span class="card__index">keyboardAdapter(mapping)</span>
+                <h3>Any keyboard tool</h3>
+                <p>Dispatches arrow keys, <span class="kbd">B</span> and <span class="kbd">O</span> to the document. The mapping can be overridden.</p>
+              </li>
+              <li class="card" data-od-id="adapter-card-custom">
+                <span class="card__index">{ handle(gesture) }</span>
+                <h3>Your own</h3>
+                <p>Any object with a <code>handle</code> method receives every gesture and its timestamp.</p>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5: design/mockups/demo-privacy.html -->
+      <section data-od-id="slide-privacy" data-screen-label="05 Privacy">
+        <div class="stage">
+          <div class="slide">
+            <p class="eyebrow" data-od-id="privacy-eyebrow">Privacy</p>
+            <h2 data-od-id="privacy-heading">On-device only</h2>
+            <ul class="fact-list">
+              <li data-od-id="privacy-fact-local">
+                <h3>Nothing leaves the browser</h3>
+                <p>No video frame and no landmark is stored or sent anywhere. There is no telemetry.</p>
+              </li>
+              <li data-od-id="privacy-fact-assets">
+                <h3>Only model files are fetched</h3>
+                <p>Requests go to <code>assetBaseUrl</code> for the MediaPipe wasm and model, and only after you start. It accepts <code>https:</code> or relative URLs.</p>
+              </li>
+              <li data-od-id="privacy-fact-cdn">
+                <h3>The default CDN sees your IP</h3>
+                <p>Self-host the assets and point <code>assetBaseUrl</code> to them to avoid that.</p>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6: design/mockups/demo-integrate.html -->
+      <section data-od-id="slide-integrate" data-screen-label="06 Integrate">
+        <div class="stage">
+          <div class="slide">
+            <p class="eyebrow" data-od-id="integrate-eyebrow">Classic script or ES module</p>
+            <h2 data-od-id="integrate-heading">Add it to your own deck</h2>
+<pre class="codeblock" data-od-id="integrate-code-iife"><span class="c">&lt;!-- works from file:// --&gt;</span>
+&lt;script src="dist/hand-gestures.iife.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  HandGestures.createGestureControl({
+    adapter: HandGestures.revealAdapter(Reveal)
+  });
+&lt;/script&gt;</pre>
+<pre class="codeblock" data-od-id="integrate-code-esm"><span class="c">// bundled project</span>
+import { createGestureControl, keyboardAdapter }
+  from "./dist/hand-gestures.es.js";</pre>
+            <p class="muted">Without a camera the deck keeps working with keyboard and mouse.</p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@6.0.2/dist/reveal.js"></script>
   <!-- Classic script: works from a web server and when this file is opened from disk. -->
   <script src="./dist/hand-gestures.iife.js"></script>
   <script>
-    // Nothing is requested here: the camera and the MediaPipe assets load only after the user starts control.
     (function () {
-      var LABELS = {
-        off: 'Off',
-        loading: 'Loading',
-        ready: 'No hand',
-        running: 'No hand',
-        'no-hand': 'No hand',
-        'hand-detected': 'Hand detected',
-        error: 'Error'
-      };
-      var VARIANTS = {
-        off: 'off',
-        loading: 'loading',
-        ready: 'no-hand',
-        running: 'no-hand',
-        'no-hand': 'no-hand',
-        'hand-detected': 'hand',
-        error: 'error'
-      };
-
-      function el(tag, className) {
-        var node = document.createElement(tag);
-        if (className) node.className = className;
-        return node;
+      // Visible notice in the corner when the gesture library could not be loaded.
+      function showLibraryMissing() {
+        var root = document.createElement('aside');
+        root.className = 'demo-control';
+        root.id = 'demo-control';
+        root.setAttribute('aria-label', 'Gesture control');
+        var error = document.createElement('p');
+        error.className = 'demo-control__error';
+        error.id = 'demo-error';
+        error.setAttribute('role', 'alert');
+        error.textContent = 'The gesture library could not be loaded. Run "npm run build" first. Keyboard and mouse still work.';
+        root.appendChild(error);
+        document.body.appendChild(root);
       }
-
-      var root = el('aside', 'demo-control');
-      root.id = 'demo-control';
-      root.setAttribute('aria-label', 'Gesture control');
-      var bar = el('div', 'demo-control__bar');
-      var badge = el('span', 'badge badge--off');
-      badge.id = 'demo-status';
-      badge.setAttribute('role', 'status');
-      var dot = el('span', 'badge__dot');
-      var label = el('span');
-      badge.appendChild(dot);
-      badge.appendChild(label);
-      var button = el('button', 'btn btn--primary');
-      button.type = 'button';
-      button.id = 'demo-toggle';
-      var error = el('p', 'demo-control__error');
-      error.id = 'demo-error';
-      error.setAttribute('role', 'alert');
-      error.hidden = true;
-      bar.appendChild(badge);
-      bar.appendChild(button);
-      root.appendChild(bar);
-      root.appendChild(error);
-      document.body.appendChild(root);
-
-      function render(status, message) {
-        label.textContent = LABELS[status] || status;
-        badge.className = 'badge badge--' + (VARIANTS[status] || 'off');
-        var active = status !== 'off' && status !== 'error';
-        button.textContent = active ? 'Stop' : 'Start gestures';
-        button.className = active ? 'btn' : 'btn btn--primary';
-        if (status === 'error') {
-          error.textContent = message || 'Gesture control could not start. Keyboard and mouse still work.';
-          error.hidden = false;
-        } else if (status === 'loading' || status === 'off') {
-          error.textContent = '';
-          error.hidden = true;
-        }
-      }
-
-      if (!window.HandGestures) {
-        render('error', 'The gesture library could not be loaded. Run "npm run build" first. Keyboard and mouse still work.');
-        button.disabled = true;
+      if (typeof window.Reveal === 'undefined') {
+        console.error('[demo] reveal.js could not be loaded; the slides are shown without it.');
         return;
       }
-
-      var control = window.HandGestures.createGestureControl();
-      window.gestureControl = control;
-      control.on('status', function (s) { render(s.status, s.message); });
-      button.addEventListener('click', function () { control.toggle(); });
-      render('off');
+      Reveal.initialize({
+        hash: true,
+        controls: true,
+        progress: true,
+        center: false,
+        transition: 'slide',
+        // The slides lay themselves out with the design's responsive tokens: one slide = the viewport.
+        width: '100%',
+        height: '100%',
+        margin: 0,
+        minScale: 1,
+        maxScale: 1,
+        // Keep reveal's paged view on narrow screens and leave the 'g' key to gesture control.
+        scrollActivationWidth: null,
+        jumpToSlide: false
+      }).then(function () {
+        if (!window.HandGestures) {
+          console.error('[demo] dist/hand-gestures.iife.js is missing: run "npm run build" first. Keyboard and mouse still work.');
+          showLibraryMissing();
+          return;
+        }
+        // Builds the overlay in its neutral "off" state. Camera and MediaPipe assets are requested
+        // only after the user presses the start button or the G key.
+        window.gestureControl = HandGestures.createGestureControl({
+          adapter: HandGestures.revealAdapter(Reveal)
+        });
+      });
     })();
   </script>
 </body>
