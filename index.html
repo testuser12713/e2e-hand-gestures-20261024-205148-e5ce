@@ -100,6 +100,106 @@
       border-radius: var(--radius-md);
     }
     @media (max-width: 45rem) { .stage { padding-bottom: 6rem; } }
+
+    /* Corner control bar (button + status badge), cut from the design's .hg / .btn / .badge classes. */
+    :root {
+      --accent-strong: oklch(88% 0.13 195);
+      --accent-ink: oklch(18% 0.04 215);
+      --focus: oklch(88% 0.13 195);
+      --status-off: oklch(68% 0.02 250);
+      --status-loading: oklch(82% 0.15 80);
+      --status-no-hand: oklch(76% 0.07 250);
+      --status-hand: oklch(80% 0.17 150);
+      --status-error: oklch(72% 0.18 25);
+      --scrim: oklch(12% 0.02 255 / 0.86);
+      --radius-pill: 999px;
+      --overlay-width: min(15rem, calc(100vw - 2rem));
+    }
+    [hidden] { display: none !important; }
+    :focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: var(--radius-sm); }
+    .demo-control {
+      position: fixed;
+      z-index: 100;
+      left: var(--space-4);
+      bottom: var(--space-4);
+      width: var(--overlay-width);
+      display: grid;
+      gap: var(--space-2);
+    }
+    .demo-control__bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2);
+      padding: var(--space-2);
+      background: var(--scrim);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 24px oklch(5% 0.02 255 / 0.5);
+    }
+    .demo-control__error {
+      margin: 0;
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--text-sm);
+      line-height: 1.45;
+      color: var(--fg);
+      background: color-mix(in oklch, var(--status-error) 18%, var(--surface));
+      border: 1px solid color-mix(in oklch, var(--status-error) 60%, transparent);
+      border-radius: var(--radius-md);
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      min-height: 2.75rem;
+      padding: 0 var(--space-3);
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      line-height: 1;
+      white-space: nowrap;
+      color: var(--fg);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      transition: background-color 120ms, border-color 120ms, transform 120ms;
+    }
+    .btn:hover { background: oklch(31% 0.034 255); border-color: oklch(45% 0.04 255); color: var(--fg); }
+    .btn:active { transform: translateY(1px); }
+    .btn[disabled] { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
+    .btn--primary { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); }
+    .btn--primary:hover { color: var(--accent-ink); background: var(--accent-strong); border-color: var(--accent-strong); }
+    .badge {
+      --badge-color: var(--status-off);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      min-height: 1.75rem;
+      padding: 0 var(--space-3);
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+      color: var(--fg);
+      background: color-mix(in oklch, var(--badge-color) 16%, var(--surface));
+      border: 1px solid color-mix(in oklch, var(--badge-color) 55%, transparent);
+      border-radius: var(--radius-pill);
+    }
+    .badge__dot { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--badge-color); }
+    .badge--off { --badge-color: var(--status-off); }
+    .badge--loading { --badge-color: var(--status-loading); }
+    .badge--loading .badge__dot { animation: pulse 1s ease-in-out infinite; }
+    .badge--no-hand { --badge-color: var(--status-no-hand); }
+    .badge--hand { --badge-color: var(--status-hand); }
+    .badge--error { --badge-color: var(--status-error); }
+    @keyframes pulse { 50% { opacity: 0.3; } }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
   </style>
 </head>
 <body>
@@ -119,9 +219,83 @@
   <script src="./dist/hand-gestures.iife.js"></script>
   <script>
     // Nothing is requested here: the camera and the MediaPipe assets load only after the user starts control.
-    if (window.HandGestures) {
-      window.gestureControl = window.HandGestures.createGestureControl();
-    }
+    (function () {
+      var LABELS = {
+        off: 'Off',
+        loading: 'Loading',
+        ready: 'No hand',
+        running: 'No hand',
+        'no-hand': 'No hand',
+        'hand-detected': 'Hand detected',
+        error: 'Error'
+      };
+      var VARIANTS = {
+        off: 'off',
+        loading: 'loading',
+        ready: 'no-hand',
+        running: 'no-hand',
+        'no-hand': 'no-hand',
+        'hand-detected': 'hand',
+        error: 'error'
+      };
+
+      function el(tag, className) {
+        var node = document.createElement(tag);
+        if (className) node.className = className;
+        return node;
+      }
+
+      var root = el('aside', 'demo-control');
+      root.id = 'demo-control';
+      root.setAttribute('aria-label', 'Gesture control');
+      var bar = el('div', 'demo-control__bar');
+      var badge = el('span', 'badge badge--off');
+      badge.id = 'demo-status';
+      badge.setAttribute('role', 'status');
+      var dot = el('span', 'badge__dot');
+      var label = el('span');
+      badge.appendChild(dot);
+      badge.appendChild(label);
+      var button = el('button', 'btn btn--primary');
+      button.type = 'button';
+      button.id = 'demo-toggle';
+      var error = el('p', 'demo-control__error');
+      error.id = 'demo-error';
+      error.setAttribute('role', 'alert');
+      error.hidden = true;
+      bar.appendChild(badge);
+      bar.appendChild(button);
+      root.appendChild(bar);
+      root.appendChild(error);
+      document.body.appendChild(root);
+
+      function render(status, message) {
+        label.textContent = LABELS[status] || status;
+        badge.className = 'badge badge--' + (VARIANTS[status] || 'off');
+        var active = status !== 'off' && status !== 'error';
+        button.textContent = active ? 'Stop' : 'Start gestures';
+        button.className = active ? 'btn' : 'btn btn--primary';
+        if (status === 'error') {
+          error.textContent = message || 'Gesture control could not start. Keyboard and mouse still work.';
+          error.hidden = false;
+        } else if (status === 'loading' || status === 'off') {
+          error.textContent = '';
+          error.hidden = true;
+        }
+      }
+
+      if (!window.HandGestures) {
+        render('error', 'The gesture library could not be loaded. Run "npm run build" first. Keyboard and mouse still work.');
+        button.disabled = true;
+        return;
+      }
+
+      var control = window.HandGestures.createGestureControl();
+      window.gestureControl = control;
+      control.on('status', function (s) { render(s.status, s.message); });
+      button.addEventListener('click', function () { control.toggle(); });
+      render('off');
+    })();
   </script>
 </body>
 </html>
