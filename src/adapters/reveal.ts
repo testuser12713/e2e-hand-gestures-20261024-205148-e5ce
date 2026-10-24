@@ -25,7 +25,15 @@ export const DEFAULT_REVEAL_MAPPING: Readonly<Record<GestureType, string>> = Obj
 
 /** Adapter that drives a reveal.js deck. `mapping` overrides single entries of the default mapping. */
 export function revealAdapter(Reveal: RevealLike, mapping?: Partial<Record<GestureType, string>>): Adapter {
-  void Reveal;
-  void mapping;
-  return { handle(): void {} };
+  const resolved: Record<string, string | undefined> = { ...DEFAULT_REVEAL_MAPPING, ...(mapping ?? {}) };
+  return {
+    handle(gesture): void {
+      if (!Reveal || !gesture) return;
+      const name = resolved[gesture.type];
+      if (typeof name !== 'string' || name === '') return;
+      const fn = (Reveal as Record<string, unknown>)[name];
+      if (typeof fn !== 'function') return;
+      (fn as () => void).call(Reveal);
+    },
+  };
 }
