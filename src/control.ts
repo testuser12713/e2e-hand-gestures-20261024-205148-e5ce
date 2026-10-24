@@ -125,7 +125,9 @@ export function createGestureControl(options: GestureControlOptions = {}): Gestu
     try {
       adapter?.handle(gesture);
     } catch (err) {
+      // Detection keeps running: one failed gesture must not take the presentation down.
       console.error('[HandGestures] the adapter failed to handle a gesture:', err);
+      setStatus('error', errorMessage(err, `The gesture ${gesture.type} could not be applied.`));
     }
   }
 
@@ -195,12 +197,10 @@ export function createGestureControl(options: GestureControlOptions = {}): Gestu
 
   async function start(): Promise<void> {
     if (running || starting) return;
-    starting = true;
-    enabled = true;
     const token = ++generation;
     const cancelled = () => token !== generation;
-    setStatus('loading');
 
+    // 1. Validate the asset base first: an unsafe URL never reaches the camera or the network.
     let base: string;
     try {
       base = validateAssetBaseUrl(opts.assetBaseUrl);
@@ -209,20 +209,38 @@ export function createGestureControl(options: GestureControlOptions = {}): Gestu
       return;
     }
 
+    starting = true;
+    enabled = true;
+    setStatus('loading');
+
+    // 2. Open the camera first: when it is denied or missing, the model is never downloaded.
+    let s: MediaStream;
     try {
-      const s = await openCamera();
-      if (cancelled()) {
-        stopStream(s);
-        return;
-      }
-      stream = s;
-      overlay?.attachStream(s);
+      s = await openCamera();
     } catch (err) {
       if (cancelled()) return;
       fail(errorMessage(describeCameraError(err), GENERIC_START_ERROR));
       return;
     }
+    if (cancelled()) {
+      try {
+        stopStream(s);
+      } catch (err) {
+        console.error('[HandGestures] the camera could not be released:', err);
+      }
+      return;
+    }
+    stream = s;
 
+    // 3. Show the stream in the overlay; its video element is the tracker's frame source.
+    try {
+      overlay?.attachStream(s);
+    } catch (err) {
+      fail(errorMessage(err, 'The camera preview could not be shown.'));
+      return;
+    }
+
+    // 4. Load the hand tracking model (the only network requests, all to assetBaseUrl).
     try {
       const t = createHandTracker({ assetBaseUrl: base });
       tracker = t;
@@ -234,7 +252,12 @@ export function createGestureControl(options: GestureControlOptions = {}): Gestu
       return;
     }
 
-    adapter = opts.adapter ?? defaultAdapter();
+    try {
+      adapter = opts.adapter ?? defaultAdapter();
+    } catch (err) {
+      fail(errorMessage(err, 'The presentation adapter could not be created.'));
+      return;
+    }
     recognizer.reset();
     starting = false;
     running = true;
